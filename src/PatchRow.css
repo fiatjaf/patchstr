@@ -1,0 +1,35 @@
+.patch-header {
+    display: grid;
+    grid-auto-columns: 150px auto 100px 50px;
+    grid-auto-flow: column;
+    width: fill;
+    white-space: nowrap;
+    line-height: 2em;
+    margin: 5px;
+    border-radius: 3px;
+    border: 1px solid;
+    cursor: pointer;
+}
+
+.patch-header>div {
+}
+
+.patch-header>diV:nth-child(1) {
+    background-color: grey;
+}
+.patch-header>div:nth-child(2) {
+}
+.patch-header>div:nth-child(3) {
+    background-color: grey;
+}
+.patch-header>div:nth-child(4) {
+    background-color: grey;
+}
+
+.add {
+    color: lightgreen;
+}
+
+.remove {
+    color: darkred;
+}
