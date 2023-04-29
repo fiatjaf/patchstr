@@ -1,6 +1,6 @@
 .patch-header {
     display: grid;
-    grid-auto-columns: 150px auto 100px 50px;
+    grid-auto-columns: 150px auto 150px 80px;
     grid-auto-flow: column;
     width: fill;
     white-space: nowrap;
@@ -11,25 +11,22 @@
     cursor: pointer;
 }
 
-.patch-header>div {
-}
+.patch-header>div {}
 
 .patch-header>diV:nth-child(1) {
-    background-color: grey;
+    background-color: var(--primary-color);
+    text-align: center;
 }
-.patch-header>div:nth-child(2) {
-}
+
+.patch-header>div:nth-child(2) {}
+
 .patch-header>div:nth-child(3) {
-    background-color: grey;
+    background-color: var(--primary-color);
+    padding-left: 10px;
 }
+
 .patch-header>div:nth-child(4) {
-    background-color: grey;
-}
-
-.add {
-    color: lightgreen;
-}
-
-.remove {
-    color: darkred;
+    background-color: var(--primary-color);
+    text-align: right;
+    padding-right: 10px;
 }

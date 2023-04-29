@@ -12,11 +12,13 @@ const relays = [
   "wss://relay.snort.social"
 ];
 
+export const PatchKind = 19691228;
+
 const Store = new PatchCache("Patches", PatchstrDb.events);
 const Nostr = new RelayPool(relays);
 const sub = Nostr.subscribe([
   {
-    kinds: [19691228],
+    kinds: [PatchKind],
     limit: 200
   }
 ], relays,
@@ -39,7 +41,7 @@ export function App() {
     return store.filter(a => tag === undefined || a.tag === tag);
   }, [tag]);
   return (
-    <div className="app">
+    <div className="app nostr">
       <section className="side">
         <div onClick={() => setTag(undefined)}>
           All

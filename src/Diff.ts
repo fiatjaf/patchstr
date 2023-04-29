@@ -8,7 +8,8 @@ export interface ParsedPatch {
     tag: string
     author: AuthorName
     subject: string
-    diff: parseDiff.File[]
+    diff: parseDiff.File[],
+    patchFile: string
 }
 
 export interface AuthorName {
@@ -21,7 +22,7 @@ export function parseDiffEvent(ev: Event) {
     const author = ev.tags.find(a => a[0] === "author")?.[1] ?? "";
     const subject = ev.tags.find(a => a[0] === "subject")?.[1] ?? "";
 
-    const EmailRegex = /^([\w ]+)(<?\S+>)?$/i;
+    const EmailRegex = /^([\w ]+)(?: <(\S+)>)?$/i;
     const matches = author.match(EmailRegex);
     return {
         id: ev.id,
@@ -33,6 +34,7 @@ export function parseDiffEvent(ev: Event) {
             email: matches?.[2]
         },
         subject,
-        diff: parseDiff.default(ev.content)
+        diff: parseDiff.default(ev.content),
+        patchFile: ev.content
     } as ParsedPatch;
 }
