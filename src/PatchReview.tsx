@@ -1,5 +1,7 @@
 import { Chunk, File } from "parse-diff";
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom";
+import hljs from "highlight.js";
+import 'highlight.js/styles/dark.css';
 
 import "./PatchReview.css";
 import { ParsedPatch } from "./Diff";
@@ -25,8 +27,9 @@ export default function PatchReview() {
             {c.changes.map(v => <div className={`diff ${v.type}`}>
                 <div>{v.type === "del" || v.type === "normal" ? ++oldY : ""}</div>
                 <div>{v.type === "add" || v.type === "normal" ? ++newY : ""}</div>
-                <div>
-                    {v.content}
+                <div dangerouslySetInnerHTML={{
+                    __html: hljs.highlightAuto(v.content, [""]).value
+                }}>
                 </div>
             </div>)}
         </>
@@ -37,14 +40,14 @@ export default function PatchReview() {
         return <div className="file" key={k}>
             <div className="header">
                 <div>
-                    {f.from}{f.to && `...${f.to}`}
+                    {f.from}{f.to && f.to !== f.from && `...${f.to}`}
                 </div>
                 <div>
                     <div className="add">
                         +{f.additions ?? 0}
                     </div>
                     <div className="del">
-                        -{f.deleted ?? 0}
+                        -{f.deletions ?? 0}
                     </div>
                 </div>
             </div>
