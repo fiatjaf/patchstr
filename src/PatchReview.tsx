@@ -12,8 +12,10 @@ export default function PatchReview() {
     }
 
     function renderChunk(c: Chunk) {
+        var oldY = c.oldStart;
+        var newY = c.newStart;
         return <>
-            <div className="diff no-change">
+            <div className="diff chunk">
                 <div></div>
                 <div></div>
                 <div>
@@ -21,8 +23,8 @@ export default function PatchReview() {
                 </div>
             </div>
             {c.changes.map(v => <div className={`diff ${v.type}`}>
-                <div></div>
-                <div></div>
+                <div>{v.type === "del" || v.type === "normal" ? ++oldY : ""}</div>
+                <div>{v.type === "add" || v.type === "normal" ? ++newY : ""}</div>
                 <div>
                     {v.content}
                 </div>

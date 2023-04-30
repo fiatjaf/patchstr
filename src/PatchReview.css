@@ -3,6 +3,7 @@
     flex-direction: column;
     border: 1px solid;
     margin: 10px;
+    overflow: auto;
 }
 
 .file>.header {
@@ -35,4 +36,12 @@
     grid-template-columns: 50px 50px auto;
     grid-auto-flow: row;
     white-space: pre;
+}
+
+.diff>div:nth-child(1), .diff>div:nth-child(2) {
+    text-align: center;
+}
+
+.diff.chunk {
+    line-height: 2em;
 }

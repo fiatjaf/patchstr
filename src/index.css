@@ -2,8 +2,6 @@ body {
   margin: 0;
   font-size: 14px;
   font-family: 'Source Code Pro', monospace;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   background-color: var(--background-color);
   color: var(--text-color);
 }
@@ -17,11 +15,11 @@ body {
   --subtext-color: #BDBDBD;
 
   /* Code diff colors */
-  --diff-background-color: #2B2B2B;
-  --added-code-color: #512DA8;
-  --deleted-code-color: #C2185B;
-  --unchanged-code-color: #424242;
-  --diff-text-color: #FFFFFF;
+  --diff-background-color: #3c2626;
+  --added-code-color: #204929;
+  --deleted-code-color: #492a2a;
+  --unchanged-code-color: #2b2b2b;
+  --diff-text-color: #d8d8d8;
 }
 
 .normal {
