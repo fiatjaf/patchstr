@@ -5,6 +5,7 @@ import { PatchCache } from './Cache/PatchCache';
 import { PatchstrDb } from './Db';
 import { PatchRow } from './PatchRow';
 import { parseDiffEvent } from './Diff';
+import { useNavigate } from 'react-router-dom';
 
 const relays = [
   "wss://relay.damus.io",
@@ -23,8 +24,10 @@ const sub = Nostr.subscribe([
   }
 ], relays,
   async (e) => {
-    console.debug(e);
-    await Store.set(parseDiffEvent(e));
+    const p = parseDiffEvent(e);
+    if (p.tag) {
+      await Store.set(p);
+    }
   }
 );
 
@@ -34,21 +37,25 @@ function usePatchStore() {
 
 export function App() {
   const store = usePatchStore();
-  const tags = [...new Set(store.map(a => a.tag))];
+  const navigate = useNavigate();
   const [tag, setTag] = useState<string>();
 
   const patches = useMemo(() => {
     return store.filter(a => tag === undefined || a.tag === tag);
-  }, [tag]);
+  }, [tag, store]);
+
   return (
     <div className="app nostr">
       <section className="side">
         <div onClick={() => setTag(undefined)}>
           All
         </div>
-        {tags.map(a => <div key={a} onClick={() => setTag(a)}>
+        {[...new Set(store.map(a => a.tag))].map(a => <div key={a} onClick={() => setTag(a)}>
           {a}
         </div>)}
+        <div onClick={() => navigate("/new")}>
+          + Create Patch
+        </div>
       </section>
       <section className="patch-list">
         {patches.map(a => <PatchRow ev={a} key={a.id} />)}

@@ -5,7 +5,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
 import {App} from './App';
 import PatchReview from './PatchReview';
-
+import NewPatch from './NewPatch';
 
 const router = createBrowserRouter([
   {
@@ -15,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: "/e/:id",
     element: <PatchReview />
+  },
+  {
+    path: "/new",
+    element: <NewPatch />
   }
 ]);
 const root = ReactDOM.createRoot(

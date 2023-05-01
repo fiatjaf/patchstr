@@ -15,11 +15,28 @@ body {
   --subtext-color: #BDBDBD;
 
   /* Code diff colors */
-  --diff-background-color: #3c2626;
   --added-code-color: #204929;
   --deleted-code-color: #492a2a;
   --unchanged-code-color: #2b2b2b;
   --diff-text-color: #d8d8d8;
+}
+
+a {
+  text-decoration: initial;
+  color: inherit;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+textarea, input {
+  background-color: var(--unchanged-code-color);
+  color: var(--diff-text-color);
+  border: 0;
+  border-radius: 5px;
+  width: stretch;
+  padding: 5px;
 }
 
 .normal {

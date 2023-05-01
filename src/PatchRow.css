@@ -2,7 +2,7 @@
     display: grid;
     grid-auto-columns: 150px auto 150px 80px;
     grid-auto-flow: column;
-    width: fill;
+    width: stretch;
     white-space: nowrap;
     line-height: 2em;
     margin: 5px;
