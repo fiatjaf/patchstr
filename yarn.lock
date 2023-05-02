@@ -1942,6 +1942,11 @@
     schema-utils "^3.0.0"
     source-map "^0.7.3"
 
+"@protobufjs/base64@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@protobufjs/base64/-/base64-1.1.2.tgz#4c85730e59b9a1f1f349047dbf24296034bb2735"
+  integrity sha512-AZkcAA5vnN/v4PDqKyMR5lx7hZttPDgClv83E//FMNhR2TMcLUhfRUBHCmSl0oi9zMgDDqRUJkSxO3wm85+XLg==
+
 "@remix-run/router@1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.6.0.tgz#45010e1826f4d81a1b2cfaf874f1aac93998cd28"
@@ -6990,7 +6995,7 @@ nostr-relaypool@^0.6.27:
     nostr-tools "^1.10.0"
     safe-stable-stringify "^2.4.2"
 
-nostr-tools@^1.10.0:
+nostr-tools@^1.10.0, nostr-tools@^1.10.1:
   version "1.10.1"
   resolved "https://registry.yarnpkg.com/nostr-tools/-/nostr-tools-1.10.1.tgz#b52043b3031f4314478d0a3bfaa8ffb9cc4f98a0"
   integrity sha512-zgTYJeuZQ3CDASsmBEcB5i6V6l0IaA6cjnll6OVik3FoZcvbCaL7yP8I40hYnOIi3KlJykV7jEF9fn8h1NzMnA==

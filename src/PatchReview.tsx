@@ -1,10 +1,8 @@
-import { Chunk, File } from "parse-diff";
 import { useLocation } from "react-router-dom";
-import hljs from "highlight.js";
-import 'highlight.js/styles/dark.css';
 
 import "./PatchReview.css";
 import { ParsedPatch } from "./Diff";
+import PatchView from "./PathView";
 
 export default function PatchReview() {
     const location = useLocation();
@@ -13,52 +11,5 @@ export default function PatchReview() {
         return <b>Missing route data</b>
     }
 
-    function renderChunk(c: Chunk) {
-        var oldY = c.oldStart;
-        var newY = c.newStart;
-        return <>
-            <div className="diff chunk">
-                <div></div>
-                <div></div>
-                <div>
-                    {c.content}
-                </div>
-            </div>
-            {c.changes.map(v => <div className={`diff ${v.type}`}>
-                <div>{v.type === "del" || v.type === "normal" ? ++oldY : ""}</div>
-                <div>{v.type === "add" || v.type === "normal" ? ++newY : ""}</div>
-                <div dangerouslySetInnerHTML={{
-                    __html: hljs.highlightAuto(v.content, [""]).value
-                }}>
-                </div>
-            </div>)}
-        </>
-    }
-
-    function renderFileChanges(f: File) {
-        const k = `${f.from}=${f.to}`;
-        return <div className="file" key={k}>
-            <div className="header">
-                <div>
-                    {f.from}{f.to && f.to !== f.from && `...${f.to}`}
-                </div>
-                <div>
-                    <div className="add">
-                        +{f.additions ?? 0}
-                    </div>
-                    <div className="del">
-                        -{f.deletions ?? 0}
-                    </div>
-                </div>
-            </div>
-            <div className="body">
-                {f.chunks.map(renderChunk)}
-            </div>
-        </div>
-    }
-
-    const patch = location.state as ParsedPatch
-    return <>
-        {patch.diff.map(renderFileChanges)}
-    </>
+    return <PatchView patch={location.state as ParsedPatch} />
 }

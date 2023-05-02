@@ -16,7 +16,7 @@ const relays = [
 export const PatchKind = 19691228;
 
 const Store = new PatchCache("Patches", PatchstrDb.events);
-const Nostr = new RelayPool(relays);
+export const Nostr = new RelayPool(relays);
 const sub = Nostr.subscribe([
   {
     kinds: [PatchKind],
@@ -41,7 +41,7 @@ export function App() {
   const [tag, setTag] = useState<string>();
 
   const patches = useMemo(() => {
-    return store.filter(a => tag === undefined || a.tag === tag);
+    return [...store.filter(a => tag === undefined || a.tag === tag)].sort(a => -a.created);
   }, [tag, store]);
 
   return (
