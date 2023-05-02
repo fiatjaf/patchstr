@@ -21,7 +21,7 @@ export default function useProfile(key: string) {
                 setProfile(meta);
             })
             .catch(console.error);
-    });
+    }, []);
 
     return profile;
 }
