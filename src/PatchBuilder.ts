@@ -29,7 +29,8 @@ export default async function buildPatchEvent(title: string, author: string, rep
     tags: [
       ["t", repo.split("/").pop()!.replace(".git", "")],
       ["subject", title],
-      ["author", author]
+      ["author", author],
+      ["r", repo]
     ]
   })
 }
