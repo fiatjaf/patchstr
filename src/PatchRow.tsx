@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { PatchKind } from "./App";
 import { encodeTLV } from "./TLV";
 import { NostrPrefix } from "./Nostr";
+import useProfile from "./useProfile";
 
 export function PatchRow({ ev }: { ev: ParsedPatch }) {
     const navigate = useNavigate();
+    const profile = useProfile(ev.pubkey);
 
     function goToPatch() {
         const link = encodeTLV(ev.id, NostrPrefix.Event, undefined, PatchKind);
@@ -20,7 +22,8 @@ export function PatchRow({ ev }: { ev: ParsedPatch }) {
     return <div className="patch-row" onClick={goToPatch}>
         <div className="patch-header">
             <div>
-                {ev.author.name}
+                {profile?.picture && <img src={profile.picture} />}
+                {profile?.display_name ?? profile?.name ?? ev.author.name}
             </div>
             <div>
                 {ev.subject}

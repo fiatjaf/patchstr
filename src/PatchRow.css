@@ -16,6 +16,15 @@
 .patch-header>diV:nth-child(1) {
     background-color: var(--primary-color);
     text-align: center;
+    display: flex;
+    align-content: center;
+}
+
+.patch-header>diV:nth-child(1) img {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    margin-right: 5px;
 }
 
 .patch-header>div:nth-child(2) {}

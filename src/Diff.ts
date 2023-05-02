@@ -30,7 +30,7 @@ export function parseDiffEvent(ev: Event) {
         pubkey: ev.pubkey,
         tag,
         author: {
-            name: matches?.[1] ?? ev.pubkey.slice(0, 12),
+            name: matches?.[1],
             email: matches?.[2]
         },
         subject,
