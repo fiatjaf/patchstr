@@ -1,0 +1,19 @@
+.tree svg {
+    height: 1em;
+    width: 28px;
+}
+
+.tree-dir {
+    padding-left: 10px;
+}
+
+.tree-item {
+    display: flex;
+    align-content: center;
+    padding: 2px 0;
+    user-select: none;
+}
+
+.tree-item:hover {
+    cursor: pointer;
+}

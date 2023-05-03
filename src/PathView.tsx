@@ -2,7 +2,9 @@ import { File, Chunk } from "parse-diff";
 import hljs from "highlight.js";
 import 'highlight.js/styles/dark.css';
 
+import "./PatchView.css";
 import { ParsedPatch } from "./Diff";
+import Icon from "./Icon";
 
 export default function PatchView({ patch }: { patch: ParsedPatch }) {
 
@@ -13,6 +15,7 @@ export default function PatchView({ patch }: { patch: ParsedPatch }) {
             <div className="diff chunk">
                 <div></div>
                 <div></div>
+                <div></div>
                 <div>
                     {c.content}
                 </div>
@@ -20,6 +23,9 @@ export default function PatchView({ patch }: { patch: ParsedPatch }) {
             {c.changes.map(v => <div className={`diff ${v.type}`}>
                 <div>{v.type === "del" || v.type === "normal" ? ++oldY : ""}</div>
                 <div>{v.type === "add" || v.type === "normal" ? ++newY : ""}</div>
+                <div>
+                    <Icon name="annotation" size={16}/>
+                </div>
                 <div dangerouslySetInnerHTML={{
                     __html: hljs.highlightAuto(v.content, [""]).value
                 }}>

@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import "./PatchReview.css";
 import { ParsedPatch } from "./Diff";
 import PatchView from "./PathView";
+import PatchFileList from "./PatchFileList";
 
 export default function PatchReview() {
     const location = useLocation();
@@ -11,5 +12,12 @@ export default function PatchReview() {
         return <b>Missing route data</b>
     }
 
-    return <PatchView patch={location.state as ParsedPatch} />
+    return <div className="patch-review">
+        <div>
+            <PatchFileList patch={location.state as ParsedPatch} />
+        </div>
+        <div>
+            <PatchView patch={location.state as ParsedPatch} />
+        </div>
+    </div>
 }

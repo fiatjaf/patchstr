@@ -1,11 +1,12 @@
-import { useMemo, useState, useSyncExternalStore } from 'react';
-import './App.css';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { RelayPool } from "nostr-relaypool";
+
+import './App.css';
 import { PatchCache } from './Cache/PatchCache';
 import { PatchstrDb } from './Db';
 import { PatchRow } from './PatchRow';
 import { parseDiffEvent } from './Diff';
-import { useNavigate } from 'react-router-dom';
 
 const relays = [
   "wss://relay.damus.io",
@@ -17,19 +18,6 @@ export const PatchKind = 19691228;
 
 const Store = new PatchCache("Patches", PatchstrDb.events);
 export const Nostr = new RelayPool(relays);
-const sub = Nostr.subscribe([
-  {
-    kinds: [PatchKind],
-    limit: 200
-  }
-], relays,
-  async (e) => {
-    const p = parseDiffEvent(e);
-    if (p.tag) {
-      await Store.set(p);
-    }
-  }
-);
 
 function usePatchStore() {
   return useSyncExternalStore(a => Store.hook(a, "*"), () => Store.snapshot());
@@ -39,6 +27,23 @@ export function App() {
   const store = usePatchStore();
   const navigate = useNavigate();
   const [tag, setTag] = useState<string>();
+
+  useEffect(() => {
+    const sub = Nostr.subscribe([
+      {
+        kinds: [PatchKind],
+        limit: 200
+      }
+    ], relays,
+      async (e) => {
+        const p = parseDiffEvent(e);
+        if (p.tag) {
+          await Store.set(p);
+        }
+      }
+    );
+    return sub;
+  }, []);
 
   const patches = useMemo(() => {
     return [...store.filter(a => tag === undefined || a.tag === tag)].sort(a => -a.created);

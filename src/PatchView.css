@@ -1,0 +1,56 @@
+.file {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid;
+    margin: 10px;
+    overflow: auto;
+}
+
+.file>.header {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    background-color: var(--primary-color);
+}
+
+.file>.header>div:nth-child(1) {
+    flex-grow: 1;
+}
+
+.file>.header>div:nth-child(2) {
+    display: flex;
+    flex-direction: row;
+}
+
+.file>.header>div:nth-child(2)>div {
+    min-width: 20px;
+}
+
+.file>.body {
+    display: flex;
+    flex-direction: column;
+}
+
+.diff {
+    display: grid;
+    grid-template-columns: 50px 50px 20px auto;
+    grid-auto-flow: row;
+    white-space: pre;
+}
+
+.diff>div:nth-child(1), .diff>div:nth-child(2), .diff>div:nth-child(3) {
+    text-align: center;
+}
+
+.diff>div:nth-child(3) {
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.diff:hover>div:nth-child(3) {
+    visibility: visible;
+}
+
+.diff.chunk {
+    line-height: 2em;
+}
