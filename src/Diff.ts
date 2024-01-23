@@ -1,40 +1,47 @@
 import * as parseDiff from "parse-diff";
-import { Event } from 'nostr-tools';
+import { Event } from 'nostr-tools/pure';
+import { RepoAnnouncementKind } from "./App";
 
 export interface ParsedPatch {
     id: string
     created: number
     pubkey: string
-    tag: string
-    author: AuthorName
     subject: string
     diff: parseDiff.File[],
     patchFile: string
+    repo: RepoReference | undefined
 }
 
-export interface AuthorName {
-    name: string
-    email: string
+export type RepoReference = {
+    id: string
+    pubkey: string
+    relay: string | undefined
 }
 
-export function parseDiffEvent(ev: Event) {
-    const tag = ev.tags.find(a => a[0] === "t")?.[1] ?? "";
-    const author = ev.tags.find(a => a[0] === "author")?.[1] ?? "";
-    const subject = ev.tags.find(a => a[0] === "subject")?.[1] ?? "";
+export function parseDiffEvent(ev: Event): ParsedPatch {
+    const subject = ev.content.split('\n').slice(0, 6)
+        .map(line => line.match(/^Subject: (.*)$/)).filter(m => m)[0]?.[1] || ev.id;
 
-    const EmailRegex = /^([\w ]+)(?: <(\S+)>)?$/i;
-    const matches = author.match(EmailRegex);
+    let repo: RepoReference | undefined = undefined
+    let a = ev.tags.find(a => a[0] === "a")
+    if (a && a[1]) {
+        let [kind, pubkey, id] = a[1].split('/')
+        if (parseInt(kind) === RepoAnnouncementKind) {
+          repo = {
+            pubkey,
+            id,
+            relay: a[2]
+          }
+        }
+    }
+
     return {
         id: ev.id,
         created: ev.created_at,
         pubkey: ev.pubkey,
-        tag,
-        author: {
-            name: matches?.[1],
-            email: matches?.[2]
-        },
         subject,
         diff: parseDiff.default(ev.content),
-        patchFile: ev.content
-    } as ParsedPatch;
+        patchFile: ev.content,
+        repo: repo,
+    };
 }

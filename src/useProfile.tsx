@@ -14,9 +14,8 @@ export default function useProfile(key: string) {
     const [profile, setProfile] = useState<Metadata>();
 
     useEffect(() => {
-
         Nostr.fetchAndCacheMetadata(key)
-            .then(v => {
+            .then((v: any) => {
                 const meta = JSON.parse(v.content) as Metadata;
                 setProfile(meta);
             })

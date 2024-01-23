@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { neventEncode } from "nostr-tools/nip19";
 
 import "./NewPatch.css";
 import PatchView from "./PathView";
@@ -6,23 +8,20 @@ import { parseDiffEvent } from "./Diff";
 import { unixNow } from "./Util";
 import buildPatchEvent from "./PatchBuilder";
 import { Nostr } from "./App";
-import { useNavigate } from "react-router-dom";
-import { encodeTLV } from "./TLV";
-import { NostrPrefix } from "./Nostr";
+import { ParsedRepo } from "./Repo";
 
 export default function NewPatch() {
     const navigate = useNavigate();
     const [subject, setSubject] = useState("");
     const [diff, setDiff] = useState("");
-    const [repo, setRepo] = useState("");
-    const [relay, setRelay] = useState("");
+    const {naddr} = useParams()
+    let parsedRepo: ParsedRepo
 
     async function submitPatch() {
-        const ev = await buildPatchEvent(subject, "", repo, diff);
+        const ev = await buildPatchEvent(parsedRepo, subject, diff);
         console.debug(ev);
-
-        Nostr.publish(ev, relay.split(/[,; ]/));
-        navigate(`/e/${encodeTLV(ev.id, NostrPrefix.Event)}`, {
+        Nostr.publish(ev, parsedRepo.patches);
+        navigate(`/e/${neventEncode({id: ev.id})}`, {
             state: ev
         });
     }
@@ -31,24 +30,16 @@ export default function NewPatch() {
         return <div>
             <a href="/">&lt; Back</a>
             <h1>
-                New Patch
+                New Patch to {naddr}
             </h1>
             <p>
                 Patch Title:
             </p>
             <input type="text" placeholder="chore: tweak NIP's" value={subject} onChange={e => setSubject(e.target.value)} />
             <p>
-                Enter Diff:
-            </p>
-            <textarea cols={80} rows={40} value={diff} onChange={e => setDiff(e.target.value)}></textarea>
-            <p>
                 Git Repo:
             </p>
-            <input type="text" placeholder="https://github.com/user/repo" value={repo} onChange={e => setRepo(e.target.value)} />
-            <p>
-                Relay(s):
-            </p>
-            <input type="text" placeholder="wss://nostr.mutinywallet.com wss://nos.lol" value={relay} onChange={e => setRelay(e.target.value)} />
+            <textarea cols={80} rows={40} value={diff} onChange={e => setDiff(e.target.value)}></textarea>
             <br /><br />
             <button onClick={() => submitPatch()}>
                 Submit
@@ -73,6 +64,12 @@ export default function NewPatch() {
             <PatchView patch={tmpDiff} />
         </div>
     }
+
+    const location = useLocation();
+    if (!location.state) {
+        return <b>Missing route data</b>
+    }
+    parsedRepo = location.state as ParsedRepo
 
     return <div className="new-patch">
         {inputs()}

@@ -7,7 +7,6 @@ import PatchFileList from "./PatchFileList";
 
 export default function PatchReview() {
     const location = useLocation();
-
     if (!location.state) {
         return <b>Missing route data</b>
     }

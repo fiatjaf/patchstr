@@ -17,7 +17,7 @@ const router = createBrowserRouter([
     element: <PatchReview />
   },
   {
-    path: "/new",
+    path: "/new/:naddr",
     element: <NewPatch />
   }
 ]);

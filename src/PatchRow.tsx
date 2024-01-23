@@ -1,10 +1,10 @@
-import "./PatchRow.css"
 import moment from "moment";
-import { ParsedPatch } from "./Diff";
 import { useNavigate } from "react-router-dom";
+import { neventEncode } from "nostr-tools/nip19";
+
+import "./PatchRow.css"
+import { ParsedPatch } from "./Diff";
 import { PatchKind } from "./App";
-import { encodeTLV } from "./TLV";
-import { NostrPrefix } from "./Nostr";
 import useProfile from "./useProfile";
 
 export function PatchRow({ ev }: { ev: ParsedPatch }) {
@@ -12,7 +12,7 @@ export function PatchRow({ ev }: { ev: ParsedPatch }) {
     const profile = useProfile(ev.pubkey);
 
     function goToPatch() {
-        const link = encodeTLV(ev.id, NostrPrefix.Event, undefined, PatchKind);
+        const link = neventEncode({ id: ev.id, kind: PatchKind });
         navigate(`/e/${link}`, {
             state: ev
         });
@@ -23,7 +23,7 @@ export function PatchRow({ ev }: { ev: ParsedPatch }) {
         <div className="patch-header">
             <div>
                 {profile?.picture && <img src={profile.picture} />}
-                {profile?.display_name ?? profile?.name ?? ev.author.name}
+                {profile?.display_name ?? profile?.name ?? ev.pubkey}
             </div>
             <div>
                 {ev.subject}

@@ -1,6 +1,6 @@
 .patch-header {
     display: grid;
-    grid-auto-columns: 150px auto 150px 80px;
+    grid-auto-columns: 150px auto 140px 80px;
     grid-auto-flow: column;
     width: stretch;
     white-space: nowrap;
@@ -15,9 +15,9 @@
 
 .patch-header>diV:nth-child(1) {
     background-color: var(--primary-color);
-    text-align: center;
-    display: flex;
-    align-content: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 10px;
 }
 
 .patch-header>diV:nth-child(1) img {
@@ -27,7 +27,10 @@
     margin-right: 5px;
 }
 
-.patch-header>div:nth-child(2) {}
+.patch-header>div:nth-child(2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 .patch-header>div:nth-child(3) {
     background-color: var(--primary-color);

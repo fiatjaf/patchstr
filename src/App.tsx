@@ -1,44 +1,68 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Event } from 'nostr-tools/pure';
 import { RelayPool } from "nostr-relaypool";
 
 import './App.css';
 import { PatchCache } from './Cache/PatchCache';
 import { PatchstrDb } from './Db';
 import { PatchRow } from './PatchRow';
-import { parseDiffEvent } from './Diff';
+import { parseDiffEvent, RepoReference } from './Diff';
+import { RepoCache } from './Cache/RepoCache';
+import { parseRepoEvent } from './Repo';
+import { naddrEncode } from 'nostr-tools/nip19';
 
 const relays = [
   "wss://relay.damus.io",
   "wss://nos.lol",
-  "wss://relay.snort.social"
+  "wss://relay.snort.social",
+  "wss://relay.primal.net",
+  "wss://nostr-pub.wellorder.net",
+  "wss://nostr.fmt.wiz.biz",
+  "wss://relay.nostr.bg",
 ];
 
-export const PatchKind = 19691228;
+export const PatchKind = 1617;
+export const RepoAnnouncementKind = 30617;
 
-const Store = new PatchCache("Patches", PatchstrDb.events);
+const PatchStore = new PatchCache("Patches", PatchstrDb.events);
+const RepoStore = new RepoCache("Repos", PatchstrDb.repos);
 export const Nostr = new RelayPool(relays);
 
 function usePatchStore() {
-  return useSyncExternalStore(a => Store.hook(a, "*"), () => Store.snapshot());
+  return useSyncExternalStore(a => PatchStore.hook(a, "*"), () => PatchStore.snapshot());
+}
+
+function useRepoStore() {
+  return useSyncExternalStore(a => RepoStore.hook(a, "*"), () => RepoStore.snapshot());
 }
 
 export function App() {
-  const store = usePatchStore();
+  const patchStore = usePatchStore();
+  const repoStore = useRepoStore();
   const navigate = useNavigate();
-  const [tag, setTag] = useState<string>();
+  const [repo, setRepo] = useState<RepoReference>();
 
   useEffect(() => {
     const sub = Nostr.subscribe([
       {
-        kinds: [PatchKind],
+        kinds: [PatchKind,RepoAnnouncementKind],
         limit: 200
       }
     ], relays,
-      async (e) => {
-        const p = parseDiffEvent(e);
-        if (p.tag) {
-          await Store.set(p);
+      async (e: Event, _: boolean, relay: string) => {
+        switch (e.kind as number) {
+          case PatchKind: {
+            const p = parseDiffEvent(e);
+            await PatchStore.set(p);
+            break
+          }
+          case RepoAnnouncementKind: {
+            const p = parseRepoEvent(e);
+            p.relay = relay
+            await RepoStore.set(p);
+            break
+          }
         }
       }
     );
@@ -46,21 +70,27 @@ export function App() {
   }, []);
 
   const patches = useMemo(() => {
-    return [...store.filter(a => tag === undefined || a.tag === tag)].sort(a => -a.created);
-  }, [tag, store]);
+    return [...patchStore].filter(patch => !repo || (patch.repo?.id === repo.id && patch.repo?.pubkey === repo.pubkey)).sort(a => -a.created);
+  }, [repo, patchStore]);
+
+  console.log("REPOSTORE", repoStore)
 
   return (
     <div className="app nostr">
       <section className="side">
-        <div onClick={() => setTag(undefined)}>
+        <div onClick={() => setRepo(undefined)}>
           All
         </div>
-        {[...new Set(store.map(a => a.tag))].map(a => <div key={a} onClick={() => setTag(a)}>
-          {a}
-        </div>)}
-        <div onClick={() => navigate("/new")}>
+        {repoStore.map(repo => (
+          <div
+            key={repo.pubkey + "/" + repo.id}
+            onClick={() => setRepo({id: repo.id, pubkey: repo.pubkey, relay: undefined})}>
+              {repo.name || repo.id}
+          </div>
+        ))}
+        {repo && <div onClick={() => navigate("/new/" + naddrEncode({ identifier: repo.id, kind: RepoAnnouncementKind, relays: repo.relay ? [repo.relay] : [], pubkey: repo.pubkey }))}>
           + Create Patch
-        </div>
+        </div>}
       </section>
       <section className="patch-list">
         {patches.map(a => <PatchRow ev={a} key={a.id} />)}
